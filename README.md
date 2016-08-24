@@ -1,5 +1,7 @@
 # pdftables-api
 
+[![Build Status](https://travis-ci.org/pdftables/python-pdftables-api.svg)](https://travis-ci.org/pdftables/python-pdftables-api)
+
 Python library to interact with the
 [PDFTables.com](https://pdftables.com/api) API.
 
