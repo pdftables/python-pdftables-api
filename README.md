@@ -33,9 +33,16 @@ c.xlsx('input.pdf', 'output.xlsx')
 
 ## Configuring a timeout
 
-If you are converting a large document, you may want to increase the timeout.
-The below example allows 60 seconds to connect to our server, and 1 hour to
-convert the document.
+If you are converting a large document (hundreds or thousands of pages),
+you may want to increase the timeout.
+
+Here is an example of the sort of error that might be encountered:
+
+```
+ReadTimeout: HTTPSConnectionPool(host='pdftables.com', port=443): Read timed out. (read timeout=300)
+```
+
+The below example allows 60 seconds to connect to our server, and 1 hour to convert the document:
 
 ```py
 import pdftables_api
