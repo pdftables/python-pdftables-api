@@ -40,9 +40,10 @@ _EXT_FORMATS = {
 
 
 class Client(object):
-    def __init__(self, api_key, api_url=_API_URL):
+    def __init__(self, api_key, api_url=_API_URL, timeout=_DEFAULT_TIMEOUT):
         self.api_key = api_key
         self.api_url = api_url
+        self.timeout = timeout
 
     def xlsx(self, pdf_path, xlsx_path):
         """
@@ -94,7 +95,7 @@ class Client(object):
             raise APIException("Invalid API key")
 
         if 'timeout' not in requests_params:
-            requests_params.update({'timeout': _DEFAULT_TIMEOUT})
+            requests_params.update({'timeout': self.timeout})
 
         (_, out_format) = Client.ensure_format_ext(None, out_format)
         url = self.api_url
