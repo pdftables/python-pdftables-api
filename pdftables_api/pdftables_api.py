@@ -16,7 +16,10 @@ import os
 
 import requests
 
-import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 
 FORMAT_CSV = 'csv'
