@@ -16,6 +16,11 @@ import os
 
 import requests
 
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
+
 
 FORMAT_CSV = 'csv'
 FORMAT_XLSX_MULTIPLE = 'xlsx-multiple'
@@ -38,38 +43,37 @@ _EXT_FORMATS = {
     '.xml': FORMAT_XML,
 }
 
-
 class Client(object):
     def __init__(self, api_key, api_url=_API_URL, timeout=_DEFAULT_TIMEOUT):
         self.api_key = api_key
         self.api_url = api_url
         self.timeout = timeout
 
-    def xlsx(self, pdf_path, xlsx_path):
+    def xlsx(self, pdf_path, xlsx_path=None):
         """
         Convenience method to convert PDF to XLSX multiple sheets.
         """
         return self.xlsx_multiple(pdf_path, xlsx_path)
 
-    def xlsx_single(self, pdf_path, xlsx_path):
+    def xlsx_single(self, pdf_path, xlsx_path=None):
         """
         Convenience method to convert PDF to XLSX single sheet.
         """
         return self.convert(pdf_path, xlsx_path, out_format=FORMAT_XLSX_SINGLE)
 
-    def xlsx_multiple(self, pdf_path, xlsx_path):
+    def xlsx_multiple(self, pdf_path, xlsx_path=None):
         """
         Convenience method to convert PDF to XLSX multiple sheets.
         """
         return self.convert(pdf_path, xlsx_path, out_format=FORMAT_XLSX_MULTIPLE)
 
-    def xml(self, pdf_path, xml_path):
+    def xml(self, pdf_path, xml_path=None):
         """
         Convenience method to convert PDF to XML.
         """
         return self.convert(pdf_path, xml_path, out_format=FORMAT_XML)
 
-    def csv(self, pdf_path, csv_path):
+    def csv(self, pdf_path, csv_path=None):
         """
         Convenience method to convert PDF to CSV.
         """
@@ -82,10 +86,19 @@ class Client(object):
         (out_path, out_format) = Client.ensure_format_ext(out_path, out_format)
         with open(pdf_path, 'rb') as pdf_fo:
             data = self.dump(pdf_fo, out_format, query_params, **requests_params)
-            with open(out_path, 'wb') as out_fo:
+            if out_path is None:
+                out_fo = StringIO.StringIO()
                 for chunk in data:
-                    if chunk:
-                        out_fo.write(chunk)
+                        if chunk:
+                            out_fo.write(chunk)
+                content = out_fo.getvalue()
+                out_fo.close()
+                return content
+            else:
+                with open(out_path, 'wb') as out_fo:
+                    for chunk in data:
+                        if chunk:
+                            out_fo.write(chunk)
 
     def dump(self, pdf_fo, out_format=None, query_params=None, **requests_params):
         """
