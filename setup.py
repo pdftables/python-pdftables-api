@@ -34,7 +34,7 @@ setup(
     url = 'https://github.com/sensiblecode/python-pdftables-api',
     packages=['pdftables_api'],
     install_requires=[
-        'requests','StringIO'
+        'requests'
     ],
     tests_require=[
         'requests_mock',
