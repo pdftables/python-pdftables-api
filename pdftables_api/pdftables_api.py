@@ -88,7 +88,9 @@ class Client(object):
                 for chunk in data:
                         if chunk:
                             out_fo.write(chunk)
-                return out_fo.read()
+                content = out_fo.getvalue()
+                out_fo.close()
+                return content
             else:
                 with open(out_path, 'wb') as out_fo:
                     for chunk in data:
