@@ -86,11 +86,9 @@ class Client(object):
             if out_path is None:
                 out_fo = StringIO.StringIO()
                 for chunk in data:
-                    if chunk:
-                        out_fo.write(chunk)
-                content = out_fo.getvalue()
-                out_fo.close()
-                return content
+                        if chunk:
+                            out_fo.write(chunk)
+                return out_fo.read()
             else:
                 with open(out_path, 'wb') as out_fo:
                     for chunk in data:
