@@ -87,7 +87,7 @@ class Client(object):
         with open(pdf_path, 'rb') as pdf_fo:
             data = self.dump(pdf_fo, out_format, query_params, **requests_params)
             if out_path is None:
-                out_fo = StringIO.StringIO()
+                out_fo = StringIO()
                 for chunk in data:
                         if chunk:
                             out_fo.write(chunk)
