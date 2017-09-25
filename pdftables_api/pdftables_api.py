@@ -16,6 +16,8 @@ import os
 
 import requests
 
+from shutil import copyfileobj
+
 
 FORMAT_CSV = 'csv'
 FORMAT_XLSX_MULTIPLE = 'xlsx-multiple'
@@ -81,15 +83,25 @@ class Client(object):
         """
         (out_path, out_format) = Client.ensure_format_ext(out_path, out_format)
         with open(pdf_path, 'rb') as pdf_fo:
-            data = self.dump(pdf_fo, out_format, query_params, **requests_params)
+            response = self.request(pdf_fo, out_format, query_params,
+                                    **requests_params)
             with open(out_path, 'wb') as out_fo:
-                for chunk in data:
-                    if chunk:
-                        out_fo.write(chunk)
+                copyfileobj(response.raw, out_fo)
 
-    def dump(self, pdf_fo, out_format=None, query_params=None, **requests_params):
+    def dump(self, pdf_fo, out_format=None, query_params=None,
+             **requests_params):
         """
-        Convert PDF given by `pdf_path` into an output stream iterator.
+        Convert PDF file object given by `pdf_fo` into an output stream iterator.
+        """
+        response = self.request(pdf_fo, out_format, query_params,
+                                **requests_params)
+
+        return response.iter_content(chunk_size=4096)
+
+    def request(self, pdf_fo, out_format=None, query_params=None,
+                **requests_params):
+        """
+        Convert PDF given by `pdf_path`, returning requests.Response object.
         """
         if self.api_key == "":
             raise APIException("Invalid API key")
@@ -119,7 +131,7 @@ class Client(object):
             raise APIException("Unknown format requested")
         response.raise_for_status()
 
-        return response.iter_content(chunk_size=4096)
+        return response
 
     def remaining(self, query_params=None, **requests_params):
         """
@@ -139,7 +151,6 @@ class Client(object):
         response.raise_for_status()
 
         return int(response.content)
-
 
     @staticmethod
     def ensure_format_ext(out_path, out_format):
