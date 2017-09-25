@@ -104,7 +104,10 @@ class Client(object):
                 return response.text if use_text else response.content
 
             with open(out_path, 'wb') as out_fo:
-                copyfileobj(response.raw, out_fo)
+                converted_fo = response.raw
+                # Ensure that gzip content is decoded.
+                converted_fo.decode_content = True
+                copyfileobj(converted_fo, out_fo)
 
     def dump(self, pdf_fo, out_format=None, query_params=None,
              **requests_params):
