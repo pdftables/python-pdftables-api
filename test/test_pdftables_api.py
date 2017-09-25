@@ -13,6 +13,10 @@
 # limitations under the License.
 
 import io
+import os
+
+from tempfile import NamedTemporaryFile
+
 
 import requests_mock
 
@@ -68,8 +72,25 @@ class TestRequests(TestCase):
 
             pdf_fo = io.BytesIO(b'pdf content')
             c = Client('fake_key')
-            s = c.dump(pdf_fo, 'csv')
-            self.assertEqual(b'xlsx output', consume(s))
+
+            with NamedTemporaryFile(suffix="test.pdf") as tf:
+                filename = tf.name
+
+                tf.write(b"Hello world")
+                tf.file.close()
+
+                filename_out = filename.replace(".pdf", ".xlsx")
+
+                try:
+                    s = c.convert(filename, filename_out)
+
+                    with open(filename_out) as fd:
+                        self.assertEqual(fd.read(), "xlsx output")
+                finally:
+                    try:
+                        os.unlink(filename_out)
+                    except OSError:
+                        pass
 
     def test_different_api_url(self):
         with requests_mock.mock() as m:
