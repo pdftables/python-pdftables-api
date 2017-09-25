@@ -92,6 +92,32 @@ class TestRequests(TestCase):
                     except OSError:
                         pass
 
+    def test_successful_conversion_bytes(self):
+        with requests_mock.mock() as m:
+            m.post('https://pdftables.com/api?key=fake_key', content=b'xlsx output')
+
+            with NamedTemporaryFile(suffix="test.pdf") as tf:
+                filename = tf.name
+                tf.write(b"Hello world")
+                tf.file.close()
+
+                output = Client('fake_key').convert(filename)
+
+                self.assertEqual(b'xlsx output', output)
+
+    def test_successful_conversion_string(self):
+        with requests_mock.mock() as m:
+            m.post('https://pdftables.com/api?key=fake_key', text='csv output')
+
+            with NamedTemporaryFile(suffix="test.pdf") as tf:
+                filename = tf.name
+                tf.write(b"Hello world")
+                tf.file.close()
+
+                output = Client('fake_key').convert(filename, out_format="csv")
+
+                self.assertEqual('csv output', output)
+
     def test_different_api_url(self):
         with requests_mock.mock() as m:
             m.post('http://example.com/api?key=fake_key', text='xlsx output')
