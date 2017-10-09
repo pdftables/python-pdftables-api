@@ -16,6 +16,8 @@ import os
 
 import requests
 
+from shutil import copyfileobj
+
 
 FORMAT_CSV = 'csv'
 FORMAT_XLSX_MULTIPLE = 'xlsx-multiple'
@@ -37,7 +39,7 @@ _EXT_FORMATS = {
     '.xlsx': FORMAT_XLSX,
     '.xml': FORMAT_XML,
 }
-
+_STRING_FORMATS = {FORMAT_CSV, FORMAT_XML}
 
 class Client(object):
     def __init__(self, api_key, api_url=_API_URL, timeout=_DEFAULT_TIMEOUT):
@@ -45,51 +47,82 @@ class Client(object):
         self.api_url = api_url
         self.timeout = timeout
 
-    def xlsx(self, pdf_path, xlsx_path):
+    def xlsx(self, pdf_path, xlsx_path=None):
         """
         Convenience method to convert PDF to XLSX multiple sheets.
+
+        If xlsx_path is None, returns the output as a byte string.
         """
         return self.xlsx_multiple(pdf_path, xlsx_path)
 
-    def xlsx_single(self, pdf_path, xlsx_path):
+    def xlsx_single(self, pdf_path, xlsx_path=None):
         """
         Convenience method to convert PDF to XLSX single sheet.
+
+        If xlsx_path is None, returns the output as a byte string.
         """
         return self.convert(pdf_path, xlsx_path, out_format=FORMAT_XLSX_SINGLE)
 
-    def xlsx_multiple(self, pdf_path, xlsx_path):
+    def xlsx_multiple(self, pdf_path, xlsx_path=None):
         """
         Convenience method to convert PDF to XLSX multiple sheets.
+
+        If xlsx_path is None, returns the output as a byte string.
         """
         return self.convert(pdf_path, xlsx_path, out_format=FORMAT_XLSX_MULTIPLE)
 
-    def xml(self, pdf_path, xml_path):
+    def xml(self, pdf_path, xml_path=None):
         """
         Convenience method to convert PDF to XML.
+
+        If xml_path is None, returns the output as a string.
         """
         return self.convert(pdf_path, xml_path, out_format=FORMAT_XML)
 
-    def csv(self, pdf_path, csv_path):
+    def csv(self, pdf_path, csv_path=None):
         """
         Convenience method to convert PDF to CSV.
+
+        If csv_path is None, returns the output as a string.
         """
         return self.convert(pdf_path, csv_path, out_format=FORMAT_CSV)
 
-    def convert(self, pdf_path, out_path, out_format=None, query_params=None, **requests_params):
+    def convert(self, pdf_path, out_path=None, out_format=None, query_params=None, **requests_params):
         """
         Convert PDF given by `pdf_path` into `format` at `out_path`.
+
+        If `out_path` is None, returns a string containing the contents, or a
+        bytes for binary output types (e.g, XLSX)
         """
         (out_path, out_format) = Client.ensure_format_ext(out_path, out_format)
         with open(pdf_path, 'rb') as pdf_fo:
-            data = self.dump(pdf_fo, out_format, query_params, **requests_params)
-            with open(out_path, 'wb') as out_fo:
-                for chunk in data:
-                    if chunk:
-                        out_fo.write(chunk)
+            response = self.request(pdf_fo, out_format, query_params,
+                                    **requests_params)
 
-    def dump(self, pdf_fo, out_format=None, query_params=None, **requests_params):
+            if out_path is None:
+                use_text = out_format in _STRING_FORMATS
+                return response.text if use_text else response.content
+
+            with open(out_path, 'wb') as out_fo:
+                converted_fo = response.raw
+                # Ensure that gzip content is decoded.
+                converted_fo.decode_content = True
+                copyfileobj(converted_fo, out_fo)
+
+    def dump(self, pdf_fo, out_format=None, query_params=None,
+             **requests_params):
         """
-        Convert PDF given by `pdf_path` into an output stream iterator.
+        Convert PDF file object given by `pdf_fo` into an output stream iterator.
+        """
+        response = self.request(pdf_fo, out_format, query_params,
+                                **requests_params)
+
+        return response.iter_content(chunk_size=4096)
+
+    def request(self, pdf_fo, out_format=None, query_params=None,
+                **requests_params):
+        """
+        Convert PDF given by `pdf_path`, returning requests.Response object.
         """
         if self.api_key == "":
             raise APIException("Invalid API key")
@@ -119,7 +152,7 @@ class Client(object):
             raise APIException("Unknown format requested")
         response.raise_for_status()
 
-        return response.iter_content(chunk_size=4096)
+        return response
 
     def remaining(self, query_params=None, **requests_params):
         """
@@ -139,7 +172,6 @@ class Client(object):
         response.raise_for_status()
 
         return int(response.content)
-
 
     @staticmethod
     def ensure_format_ext(out_path, out_format):

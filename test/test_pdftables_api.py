@@ -13,6 +13,10 @@
 # limitations under the License.
 
 import io
+import os
+
+from tempfile import NamedTemporaryFile
+
 
 import requests_mock
 
@@ -68,8 +72,51 @@ class TestRequests(TestCase):
 
             pdf_fo = io.BytesIO(b'pdf content')
             c = Client('fake_key')
-            s = c.dump(pdf_fo, 'csv')
-            self.assertEqual(b'xlsx output', consume(s))
+
+            with NamedTemporaryFile(suffix="test.pdf") as tf:
+                filename = tf.name
+
+                tf.write(b"Hello world")
+                tf.file.close()
+
+                filename_out = filename.replace(".pdf", ".xlsx")
+
+                try:
+                    s = c.convert(filename, filename_out)
+
+                    with open(filename_out) as fd:
+                        self.assertEqual(fd.read(), "xlsx output")
+                finally:
+                    try:
+                        os.unlink(filename_out)
+                    except OSError:
+                        pass
+
+    def test_successful_conversion_bytes(self):
+        with requests_mock.mock() as m:
+            m.post('https://pdftables.com/api?key=fake_key', content=b'xlsx output')
+
+            with NamedTemporaryFile(suffix="test.pdf") as tf:
+                filename = tf.name
+                tf.write(b"Hello world")
+                tf.file.close()
+
+                output = Client('fake_key').convert(filename)
+
+                self.assertEqual(b'xlsx output', output)
+
+    def test_successful_conversion_string(self):
+        with requests_mock.mock() as m:
+            m.post('https://pdftables.com/api?key=fake_key', text='csv output')
+
+            with NamedTemporaryFile(suffix="test.pdf") as tf:
+                filename = tf.name
+                tf.write(b"Hello world")
+                tf.file.close()
+
+                output = Client('fake_key').convert(filename, out_format="csv")
+
+                self.assertEqual('csv output', output)
 
     def test_different_api_url(self):
         with requests_mock.mock() as m:
