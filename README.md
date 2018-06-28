@@ -8,10 +8,14 @@ Python library to interact with the
 
 ## Installation
 
-PIP:
+pip: (requires git installed)
 
     pip install git+https://github.com/pdftables/python-pdftables-api.git
 
+pip: (without git)
+
+    pip install https://github.com/pdftables/python-pdftables-api/archive/master.tar.gz
+    
 Locally:
 
     python setup.py install
