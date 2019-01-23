@@ -39,6 +39,8 @@ class TestEnsureExtFormat(TestCase):
                          Client.ensure_format_ext('foo.xlsx', 'xlsx-multiple'))
         self.assertEqual(('foo.xml', 'xml'),
                          Client.ensure_format_ext('foo.xml', 'xml'))
+        self.assertEqual(('foo.html', 'html'),
+                         Client.ensure_format_ext('foo.html', 'html'))
 
     def test_missing_format(self):
         self.assertEqual(('foo.xlsx', 'xlsx-multiple'),
