@@ -4,5 +4,11 @@ python:
  - "3.4"
  - "3.5"
  - "3.6"
+# Hack for Python 3.7; remove when Travis correctly supports it.
+matrix:
+  include:
+    - python: 3.7
+      dist: xenial
+      sudo: true
 script:
  - python setup.py test
