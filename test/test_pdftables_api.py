@@ -144,7 +144,11 @@ class TestRequests(TestCase):
             self.assertRaisesRegexp(ValueError, 'Invalid output format', c.dump, pdf_fo, 'invalid_format')
 
     def test_remaining(self):
-        pass
+        with requests_mock.mock() as m:
+            m.get('https://pdftables.com/api/remaining?key=fake_key', text='8584')
+
+            c = Client('fake_key')
+            self.assertEqual(c.remaining(), 8584)
 
     def test_response_invalid_format(self):
         with requests_mock.mock() as m:
