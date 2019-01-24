@@ -20,6 +20,7 @@ from shutil import copyfileobj
 
 
 FORMAT_CSV = 'csv'
+FORMAT_HTML = 'html'
 FORMAT_XLSX_MULTIPLE = 'xlsx-multiple'
 FORMAT_XLSX_SINGLE = 'xlsx-single'
 FORMAT_XLSX = FORMAT_XLSX_MULTIPLE
@@ -29,6 +30,7 @@ _API_URL = 'https://pdftables.com/api'
 _DEFAULT_TIMEOUT = (10, 300)  # seconds (connect and read)
 _FORMATS_EXT = {
     FORMAT_CSV: '.csv',
+    FORMAT_HTML: '.html',
     FORMAT_XLSX: '.xlsx',
     FORMAT_XLSX_MULTIPLE: '.xlsx',
     FORMAT_XLSX_SINGLE: '.xlsx',
@@ -36,10 +38,11 @@ _FORMATS_EXT = {
 }
 _EXT_FORMATS = {
     '.csv': FORMAT_CSV,
+    '.html': FORMAT_HTML,
     '.xlsx': FORMAT_XLSX,
     '.xml': FORMAT_XML,
 }
-_STRING_FORMATS = {FORMAT_CSV, FORMAT_XML}
+_STRING_FORMATS = {FORMAT_CSV, FORMAT_HTML, FORMAT_XML}
 
 class Client(object):
     def __init__(self, api_key, api_url=_API_URL, timeout=_DEFAULT_TIMEOUT):
@@ -86,6 +89,14 @@ class Client(object):
         If csv_path is None, returns the output as a string.
         """
         return self.convert(pdf_path, csv_path, out_format=FORMAT_CSV)
+
+    def html(self, pdf_path, html_path=None):
+        """
+        Convenience method to convert HTML to CSV.
+
+        If html_path is None, returns the output as a string.
+        """
+        return self.convert(pdf_path, html_path, out_format=FORMAT_HTML)
 
     def convert(self, pdf_path, out_path=None, out_format=None, query_params=None, **requests_params):
         """
