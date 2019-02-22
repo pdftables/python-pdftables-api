@@ -20,6 +20,11 @@ Locally:
 
     python setup.py install
 
+### Upgrading
+
+If using pip, then use pip with the `--upgrade` flag, e.g.
+
+    pip install --upgrade git+https://github.com/pdftables/python-pdftables-api.git
 
 ## Usage
 
