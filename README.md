@@ -35,6 +35,11 @@ c = pdftables_api.Client('my-api-key')
 c.xlsx('input.pdf', 'output.xlsx')
 ```
 
+## Formats
+
+To convert to CSV, XML or HTML simply change `c.xlsx` to be `c.csv`, `c.xml` or `c.html` respectively. 
+
+To specify Excel (single sheet) or Excel (multiple sheets) use `c.xlsx_single` or `c.xlsx_multiple`.
 
 ## Test
 
