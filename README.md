@@ -28,6 +28,11 @@ If using pip, then use pip with the `--upgrade` flag, e.g.
 
 ## Usage
 
+Sign up for an account at [PDFTables.com](https://pdftables.com/) and then visit the
+[API page](https://pdftables.com/pdf-to-excel-api) to see your API key.
+
+Replace `my-api-key` below with your API key.
+
 ```py
 import pdftables_api
 
