@@ -5,6 +5,8 @@
 Python library to interact with the
 [PDFTables.com](https://pdftables.com/api) API.
 
+Supported versions of Python are listed in [.travis.yml](.travis.yml).
+
 
 ## Installation
 
