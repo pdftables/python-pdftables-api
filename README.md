@@ -1,11 +1,9 @@
 # pdftables-api
 
-[![Build Status](https://travis-ci.org/pdftables/python-pdftables-api.svg)](https://travis-ci.org/pdftables/python-pdftables-api)
-
 Python library to interact with the
 [PDFTables.com](https://pdftables.com/api) API.
 
-Supported versions of Python are listed in [.travis.yml](.travis.yml).
+Supported versions of Python are listed in [ci-build.yml](.github/workflows/ci-build.yml).
 
 
 ## Installation
