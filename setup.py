@@ -24,7 +24,7 @@ def read(fname):
 
 setup(
     name = 'pdftables-api',
-    version = '1.1.0',
+    version = '2.0.0',
     author = 'The Sensible Code Company',
     author_email = 'support@sensiblecode.io',
     description = ('PDFTables.com Python API library.'),
@@ -44,7 +44,6 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 3',
         'Topic :: Software Development :: Libraries',
         'Topic :: System :: Networking',
