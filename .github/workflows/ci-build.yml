@@ -23,4 +23,4 @@ jobs:
           python-version: ${{ matrix.python }}
 
       - name: Run tests
-        run: python setup.py test
+        run: python -m unittest test.test_pdftables_api
