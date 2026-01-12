@@ -34,6 +34,16 @@ dev = [
 testpaths = ["test"]
 python_files = ["test_*.py"]
 
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+# "A": flake8-builtins
+# "I": isort
+# "UP": pyupgrade
+# "W": pycodestyle
+extend-select = ["A", "I", "UP", "W"]
+
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["pdftables_api"]
