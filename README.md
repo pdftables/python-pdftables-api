@@ -15,10 +15,10 @@ pip: (requires git installed)
 pip: (without git)
 
     pip install https://github.com/pdftables/python-pdftables-api/archive/master.tar.gz
-    
-Locally:
 
-    python setup.py install
+For local development:
+
+    uv sync
 
 ### Upgrading
 
@@ -48,7 +48,12 @@ To specify Excel (single sheet) or Excel (multiple sheets) use `c.xlsx_single` o
 
 ## Test
 
-    python -m unittest test.test_pdftables_api
+Tests run with pytest: `make test`
+
+## Linting and formatting
+
+* Format with `make format`
+* Apply Ruff fixes with `make fix`
 
 ## Configuring a timeout
 
