@@ -67,7 +67,6 @@ class TestRequests(TestCase):
         with requests_mock.mock() as m:
             m.post("https://pdftables.com/api?key=fake_key", text="xlsx output")
 
-            pdf_fo = io.BytesIO(b"pdf content")
             c = Client("fake_key")
 
             with NamedTemporaryFile(suffix="test.pdf") as tf:
@@ -79,7 +78,7 @@ class TestRequests(TestCase):
                 filename_out = filename.replace(".pdf", ".xlsx")
 
                 try:
-                    s = c.convert(filename, filename_out)
+                    c.convert(filename, filename_out)
 
                     with open(filename_out) as fd:
                         assert fd.read() == "xlsx output"
