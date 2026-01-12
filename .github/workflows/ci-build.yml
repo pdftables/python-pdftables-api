@@ -27,7 +27,7 @@ jobs:
         run: uv sync --frozen
 
       - name: Run tests
-        run: uv run pytest
+        run: make test
 
       - name: Build package
         run: uv build
