@@ -13,11 +13,9 @@
 # limitations under the License.
 
 import os
-
-import requests
-
 from shutil import copyfileobj
 
+import requests
 
 FORMAT_CSV = "csv"
 FORMAT_HTML = "html"
@@ -45,7 +43,7 @@ _EXT_FORMATS = {
 _STRING_FORMATS = {FORMAT_CSV, FORMAT_HTML, FORMAT_XML}
 
 
-class Client(object):
+class Client:
     def __init__(self, api_key, api_url=_API_URL, timeout=_DEFAULT_TIMEOUT):
         self.api_key = api_key
         self.api_url = api_url

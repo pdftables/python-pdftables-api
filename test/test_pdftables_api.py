@@ -14,16 +14,13 @@
 
 import io
 import os
-
 from tempfile import NamedTemporaryFile
-
-
-import requests_mock
-import pytest
-
 from unittest import TestCase
 
-from pdftables_api import Client, APIException
+import pytest
+import requests_mock
+
+from pdftables_api import APIException, Client
 
 
 class TestEnsureExtFormat(TestCase):

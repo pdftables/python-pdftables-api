@@ -13,11 +13,11 @@
 # limitations under the License.
 
 from .pdftables_api import (
-    Client,
-    APIException,
     FORMAT_CSV,
     FORMAT_XLSX,
     FORMAT_XLSX_MULTIPLE,
     FORMAT_XLSX_SINGLE,
     FORMAT_XML,
+    APIException,
+    Client,
 )
