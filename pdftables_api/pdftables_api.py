@@ -190,21 +190,21 @@ class Client:
         Ensure the appropriate file extension and format is given. If not
         provided, try to guess either.
         """
-        if out_format != None and out_format not in _FORMATS_EXT.keys():
+        if out_format is not None and out_format not in _FORMATS_EXT.keys():
             raise ValueError("Invalid output format")
 
         default_format = FORMAT_XLSX_MULTIPLE
 
         # Check if stdout is desired
-        if out_path == None:
-            if out_format == None:
+        if out_path is None:
+            if out_format is None:
                 out_format = default_format
             return (None, out_format)
 
         _, ext = os.path.splitext(out_path)
 
         # Guess output format by file extension
-        if out_format == None:
+        if out_format is None:
             if ext in _FORMATS_EXT.values():
                 out_format = _EXT_FORMATS[ext]
             else:
