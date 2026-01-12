@@ -21,3 +21,13 @@ from .pdftables_api import (
     APIException,
     Client,
 )
+
+__all__ = [
+    "FORMAT_CSV",
+    "FORMAT_XLSX",
+    "FORMAT_XLSX_MULTIPLE",
+    "FORMAT_XLSX_SINGLE",
+    "FORMAT_XML",
+    "APIException",
+    "Client",
+]
