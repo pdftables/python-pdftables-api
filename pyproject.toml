@@ -37,3 +37,6 @@ python_files = ["test_*.py"]
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["pdftables_api"]
+
+[tool.uv]
+required-version = ">=0.9"
