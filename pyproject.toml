@@ -23,7 +23,11 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-tests = ["requests_mock"]
+tests = ["requests_mock", "pytest"]
+
+[tool.pytest.ini_options]
+testpaths = ["test"]
+python_files = ["test_*.py"]
 
 [tool.setuptools.packages.find]
 where = ["."]
