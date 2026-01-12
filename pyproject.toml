@@ -27,6 +27,7 @@ classifiers = [
 dev = [
     "pytest",
     "requests-mock",
+    "ruff",
 ]
 
 [tool.pytest.ini_options]
