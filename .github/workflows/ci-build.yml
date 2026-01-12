@@ -26,6 +26,12 @@ jobs:
       - name: Install dependencies
         run: uv sync --frozen
 
+      - name: Check formatting
+        run: make check-format
+
+      - name: Check linting
+        run: make check-fix
+
       - name: Run tests
         run: make test
 
