@@ -12,10 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from .pdftables_api import (Client,
-                            APIException,
-                            FORMAT_CSV,
-                            FORMAT_XLSX,
-                            FORMAT_XLSX_MULTIPLE,
-                            FORMAT_XLSX_SINGLE,
-                            FORMAT_XML)
+from .pdftables_api import (
+    Client,
+    APIException,
+    FORMAT_CSV,
+    FORMAT_XLSX,
+    FORMAT_XLSX_MULTIPLE,
+    FORMAT_XLSX_SINGLE,
+    FORMAT_XML,
+)

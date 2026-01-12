@@ -29,41 +29,49 @@ from pdftables_api import Client, APIException
 class TestEnsureExtFormat(TestCase):
     def test_wrong_format(self):
         with pytest.raises(ValueError):
-            Client.ensure_format_ext('foo.csv', 'txt')
+            Client.ensure_format_ext("foo.csv", "txt")
         with pytest.raises(ValueError):
-            Client('key').dump('foo.pdf', 'txt')
+            Client("key").dump("foo.pdf", "txt")
 
     def test_unmodified(self):
-        assert ('foo.csv', 'csv') == Client.ensure_format_ext('foo.csv', 'csv')
-        assert ('foo.xlsx', 'xlsx-multiple') == Client.ensure_format_ext('foo.xlsx', 'xlsx-multiple')
-        assert ('foo.xlsx', 'xlsx-multiple') == Client.ensure_format_ext('foo.xlsx', 'xlsx-multiple')
-        assert ('foo.xml', 'xml') == Client.ensure_format_ext('foo.xml', 'xml')
-        assert ('foo.html', 'html') == Client.ensure_format_ext('foo.html', 'html')
+        assert ("foo.csv", "csv") == Client.ensure_format_ext("foo.csv", "csv")
+        assert ("foo.xlsx", "xlsx-multiple") == Client.ensure_format_ext(
+            "foo.xlsx", "xlsx-multiple"
+        )
+        assert ("foo.xlsx", "xlsx-multiple") == Client.ensure_format_ext(
+            "foo.xlsx", "xlsx-multiple"
+        )
+        assert ("foo.xml", "xml") == Client.ensure_format_ext("foo.xml", "xml")
+        assert ("foo.html", "html") == Client.ensure_format_ext("foo.html", "html")
 
     def test_missing_format(self):
-        assert ('foo.xlsx', 'xlsx-multiple') == Client.ensure_format_ext('foo', None)
-        assert ('foo.txt.xlsx', 'xlsx-multiple') == Client.ensure_format_ext('foo.txt', None)
-        assert ('foo.xlsx', 'xlsx-multiple') == Client.ensure_format_ext('foo.xlsx', None)
+        assert ("foo.xlsx", "xlsx-multiple") == Client.ensure_format_ext("foo", None)
+        assert ("foo.txt.xlsx", "xlsx-multiple") == Client.ensure_format_ext(
+            "foo.txt", None
+        )
+        assert ("foo.xlsx", "xlsx-multiple") == Client.ensure_format_ext(
+            "foo.xlsx", None
+        )
 
     def test_missing_ext(self):
-        assert ('foo.csv', 'csv') == Client.ensure_format_ext('foo', 'csv')
+        assert ("foo.csv", "csv") == Client.ensure_format_ext("foo", "csv")
 
     def test_incorrect_ext(self):
-        assert ('foo.txt.csv', 'csv') == Client.ensure_format_ext('foo.txt', 'csv')
-        assert ('foo.xlsx.csv', 'csv') == Client.ensure_format_ext('foo.xlsx', 'csv')
+        assert ("foo.txt.csv", "csv") == Client.ensure_format_ext("foo.txt", "csv")
+        assert ("foo.xlsx.csv", "csv") == Client.ensure_format_ext("foo.xlsx", "csv")
 
     def test_stdout(self):
-        assert (None, 'xlsx-multiple') == Client.ensure_format_ext(None, None)
-        assert (None, 'csv') == Client.ensure_format_ext(None, 'csv')
+        assert (None, "xlsx-multiple") == Client.ensure_format_ext(None, None)
+        assert (None, "csv") == Client.ensure_format_ext(None, "csv")
 
 
 class TestRequests(TestCase):
     def test_successful_conversion(self):
         with requests_mock.mock() as m:
-            m.post('https://pdftables.com/api?key=fake_key', text='xlsx output')
+            m.post("https://pdftables.com/api?key=fake_key", text="xlsx output")
 
-            pdf_fo = io.BytesIO(b'pdf content')
-            c = Client('fake_key')
+            pdf_fo = io.BytesIO(b"pdf content")
+            c = Client("fake_key")
 
             with NamedTemporaryFile(suffix="test.pdf") as tf:
                 filename = tf.name
@@ -86,99 +94,99 @@ class TestRequests(TestCase):
 
     def test_successful_conversion_bytes(self):
         with requests_mock.mock() as m:
-            m.post('https://pdftables.com/api?key=fake_key', content=b'xlsx output')
+            m.post("https://pdftables.com/api?key=fake_key", content=b"xlsx output")
 
             with NamedTemporaryFile(suffix="test.pdf") as tf:
                 filename = tf.name
                 tf.write(b"Hello world")
                 tf.file.close()
 
-                output = Client('fake_key').convert(filename)
+                output = Client("fake_key").convert(filename)
 
-                assert b'xlsx output' == output
+                assert b"xlsx output" == output
 
     def test_successful_conversion_string(self):
         with requests_mock.mock() as m:
-            m.post('https://pdftables.com/api?key=fake_key', text='csv output')
+            m.post("https://pdftables.com/api?key=fake_key", text="csv output")
 
             with NamedTemporaryFile(suffix="test.pdf") as tf:
                 filename = tf.name
                 tf.write(b"Hello world")
                 tf.file.close()
 
-                output = Client('fake_key').convert(filename, out_format="csv")
+                output = Client("fake_key").convert(filename, out_format="csv")
 
-                assert 'csv output' == output
+                assert "csv output" == output
 
     def test_different_api_url(self):
         with requests_mock.mock() as m:
-            m.post('http://example.com/api?key=fake_key', text='xlsx output')
+            m.post("http://example.com/api?key=fake_key", text="xlsx output")
 
-            pdf_fo = io.BytesIO(b'pdf content')
-            c = Client('fake_key', api_url='http://example.com/api')
-            s = c.dump(pdf_fo, 'csv')
-            assert b'xlsx output' == consume(s)
+            pdf_fo = io.BytesIO(b"pdf content")
+            c = Client("fake_key", api_url="http://example.com/api")
+            s = c.dump(pdf_fo, "csv")
+            assert b"xlsx output" == consume(s)
 
     def test_missing_api_key(self):
         with requests_mock.mock() as m:
-            m.post('https://pdftables.com/api?key=fake_key', text='xlsx output')
+            m.post("https://pdftables.com/api?key=fake_key", text="xlsx output")
 
-            pdf_fo = io.BytesIO(b'pdf content')
-            c = Client('')
-            with pytest.raises(APIException, match='Invalid API key'):
-                c.dump(pdf_fo, 'csv')
+            pdf_fo = io.BytesIO(b"pdf content")
+            c = Client("")
+            with pytest.raises(APIException, match="Invalid API key"):
+                c.dump(pdf_fo, "csv")
 
     def test_invalid_format(self):
         with requests_mock.mock() as m:
-            m.post('https://pdftables.com/api?key=fake_key', text='xlsx output')
+            m.post("https://pdftables.com/api?key=fake_key", text="xlsx output")
 
-            pdf_fo = io.BytesIO(b'pdf content')
-            c = Client('fake_key')
-            with pytest.raises(ValueError, match='Invalid output format'):
-                c.dump(pdf_fo, 'invalid_format')
+            pdf_fo = io.BytesIO(b"pdf content")
+            c = Client("fake_key")
+            with pytest.raises(ValueError, match="Invalid output format"):
+                c.dump(pdf_fo, "invalid_format")
 
     def test_remaining(self):
         with requests_mock.mock() as m:
-            m.get('https://pdftables.com/api/remaining?key=fake_key', text='8584')
+            m.get("https://pdftables.com/api/remaining?key=fake_key", text="8584")
 
-            c = Client('fake_key')
+            c = Client("fake_key")
             assert c.remaining() == 8584
 
     def test_response_invalid_format(self):
         with requests_mock.mock() as m:
-            m.post('https://pdftables.com/api?key=fake_key', status_code=400)
-            pdf_fo = io.BytesIO(b'pdf content')
-            c = Client('fake_key')
-            with pytest.raises(APIException, match='Unknown file format'):
+            m.post("https://pdftables.com/api?key=fake_key", status_code=400)
+            pdf_fo = io.BytesIO(b"pdf content")
+            c = Client("fake_key")
+            with pytest.raises(APIException, match="Unknown file format"):
                 c.dump(pdf_fo)
 
     def test_response_unauthorized(self):
         with requests_mock.mock() as m:
-            m.post('https://pdftables.com/api?key=wrong_key', status_code=401)
-            pdf_fo = io.BytesIO(b'pdf content')
-            c = Client('wrong_key')
-            with pytest.raises(APIException, match='Unauthorized API key'):
+            m.post("https://pdftables.com/api?key=wrong_key", status_code=401)
+            pdf_fo = io.BytesIO(b"pdf content")
+            c = Client("wrong_key")
+            with pytest.raises(APIException, match="Unauthorized API key"):
                 c.dump(pdf_fo)
 
     def test_response_limit_exceeded(self):
         with requests_mock.mock() as m:
-            m.post('https://pdftables.com/api?key=fake_key', status_code=402)
-            pdf_fo = io.BytesIO(b'pdf content')
-            c = Client('fake_key')
-            with pytest.raises(APIException, match='Usage limit exceeded'):
+            m.post("https://pdftables.com/api?key=fake_key", status_code=402)
+            pdf_fo = io.BytesIO(b"pdf content")
+            c = Client("fake_key")
+            with pytest.raises(APIException, match="Usage limit exceeded"):
                 c.dump(pdf_fo)
 
     def test_response_unknown_file_format(self):
         with requests_mock.mock() as m:
-            m.post('https://pdftables.com/api?key=fake_key', status_code=403)
-            png_fo = io.BytesIO(b'png content')
-            c = Client('fake_key')
-            with pytest.raises(APIException, match='Unknown format requested'):
+            m.post("https://pdftables.com/api?key=fake_key", status_code=403)
+            png_fo = io.BytesIO(b"png content")
+            c = Client("fake_key")
+            with pytest.raises(APIException, match="Unknown format requested"):
                 c.dump(png_fo)
 
 
 def consume(s):
-    r = b''
+    r = b""
     for chunk in s:
         r += chunk
     return r
