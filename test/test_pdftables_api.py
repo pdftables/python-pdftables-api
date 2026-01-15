@@ -1,4 +1,4 @@
-# Copyright 2016 The Sensible Code Company
+# Copyright 2026 Cantabular Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
