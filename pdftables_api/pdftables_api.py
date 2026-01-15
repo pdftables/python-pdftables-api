@@ -210,12 +210,9 @@ class Client:
                 "key": self.api_key,
                 "format": out_format,
                 "extractor": self.extractor,
+                "extract": self.extract,
             }
         )
-
-        # Add extract value if specified
-        if self.extract:
-            params.update({"extract": self.extract})
 
         response = requests.post(
             url, files=files, stream=True, params=params, **requests_params
