@@ -53,17 +53,18 @@ You can specify which extraction engine to use when creating a `Client`. The ava
 For AI extractors (`ai-1` and `ai-2`), you can also specify an `extract` option to control what content is extracted: `tables` (default) or `tables-paragraphs`.
 
 ```py
-import pdftables_api
+from pdftables_api import (Client, EXTRACTOR_AI_1, EXTRACTOR_AI_2,
+    EXTRACT_TABLES, EXTRACT_TABLES_PARAGRAPHS)
 
 # Standard extractor (default)
-c = pdftables_api.Client('my-api-key')
+c_standard = Client('my-api-key')
 
 # AI extractors for complex documents
-c = pdftables_api.Client('my-api-key', extractor='ai-1', extract='tables')
-c = pdftables_api.Client('my-api-key', extractor='ai-2', extract='tables-paragraphs')
+c_ai_1 = Client('my-api-key', extractor=EXTRACTOR_AI_1, extract=EXTRACT_TABLES)
+c_ai_2 = Client('my-api-key', extractor=EXTRACTOR_AI_2, extract=EXTRACT_TABLES_PARAGRAPHS)
 ```
 
-See [PDFTables API documentation](https://pdftables.com/pdf-to-excel-api) for details.
+See [PDFTables API documentation](https://pdftables.com/pdf-to-excel-api#extractors) for details.
 
 ## Test
 
