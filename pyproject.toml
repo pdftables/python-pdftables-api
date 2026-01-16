@@ -10,8 +10,8 @@ description = "PDFTables.com Python API library."
 readme = "README.md"
 license = { text = "Apache License 2.0" }
 keywords = ["pdf", "tables", "excel", "csv", "xml", "api"]
-authors = [ { name = "The Sensible Code Company", email = "support@sensiblecode.io" } ]
-urls = { "Homepage" = "https://github.com/sensiblecode/python-pdftables-api" }
+authors = [ { name = "Cantabular Ltd", email = "hello@pdftables.com" } ]
+urls = { "Homepage" = "https://github.com/pdftables/python-pdftables-api" }
 dependencies = ["requests"]
 classifiers = [
   "Development Status :: 5 - Production/Stable",

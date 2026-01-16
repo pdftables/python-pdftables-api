@@ -1,4 +1,4 @@
-# Copyright 2016 The Sensible Code Company
+# Copyright 2026 Cantabular Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -42,12 +42,70 @@ _EXT_FORMATS = {
 }
 _STRING_FORMATS = {FORMAT_CSV, FORMAT_HTML, FORMAT_XML}
 
+EXTRACTOR_STANDARD = "standard"
+EXTRACTOR_AI_1 = "ai-1"
+EXTRACTOR_AI_2 = "ai-2"
+
+EXTRACT_TABLES = "tables"
+EXTRACT_TABLES_PARAGRAPHS = "tables-paragraphs"
+
+# Valid extractor options for each extractor type
+_VALID_EXTRACTOR_VALUES = {
+    EXTRACTOR_STANDARD: (),  # Standard extractor has no options
+    EXTRACTOR_AI_1: (
+        EXTRACT_TABLES,
+        EXTRACT_TABLES_PARAGRAPHS,
+    ),  # Use a tuple for consistent order in error messages
+    EXTRACTOR_AI_2: (
+        EXTRACT_TABLES,
+        EXTRACT_TABLES_PARAGRAPHS,
+    ),
+}
+
+# Valid extractor types
+_VALID_EXTRACTORS = tuple(_VALID_EXTRACTOR_VALUES.keys())
+
 
 class Client:
-    def __init__(self, api_key, api_url=_API_URL, timeout=_DEFAULT_TIMEOUT):
+    def __init__(
+        self,
+        api_key,
+        api_url=_API_URL,
+        timeout=_DEFAULT_TIMEOUT,
+        extractor=EXTRACTOR_STANDARD,
+        extract=None,
+    ):
         self.api_key = api_key
         self.api_url = api_url
         self.timeout = timeout
+
+        # Validate and set extractor configuration
+        self._validate_extractor(extractor, extract)
+        self.extractor = extractor
+        self.extract = extract
+
+    @staticmethod
+    def _validate_extractor(extractor, extract):
+        """Validate extractor and extract parameters."""
+        if extractor not in _VALID_EXTRACTORS:
+            valid_extractors = ", ".join(_VALID_EXTRACTORS)
+            raise ValueError(
+                f'Invalid extractor "{extractor}". Valid options are: {valid_extractors}'
+            )
+
+        valid_extract_values = _VALID_EXTRACTOR_VALUES[extractor]
+        if extract is not None and extract not in valid_extract_values:
+            if len(valid_extract_values) == 0:
+                raise ValueError(
+                    f'Extractor "{extractor}" does not support extract parameter'
+                )
+            else:
+                valid_extract_values_str = ", ".join(
+                    str(opt) for opt in valid_extract_values
+                )
+                raise ValueError(
+                    f'Invalid extract value "{extract}" for extractor "{extractor}". Valid values are: {valid_extract_values_str}'
+                )
 
     def xlsx(self, pdf_path, xlsx_path=None):
         """
@@ -147,7 +205,14 @@ class Client:
         url = self.api_url
         files = {"f": ("file.pdf", pdf_fo)}
         params = query_params if query_params else {}
-        params.update({"key": self.api_key, "format": out_format})
+        params.update(
+            {
+                "key": self.api_key,
+                "format": out_format,
+                "extractor": self.extractor,
+                "extract": self.extract,
+            }
+        )
 
         response = requests.post(
             url, files=files, stream=True, params=params, **requests_params

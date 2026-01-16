@@ -46,6 +46,26 @@ To convert to CSV, XML or HTML simply change `c.xlsx` to be `c.csv`, `c.xml` or 
 
 To specify Excel (single sheet) or Excel (multiple sheets) use `c.xlsx_single` or `c.xlsx_multiple`.
 
+## Extractor
+
+You can specify which extraction engine to use when creating a `Client`. The available extractors are `standard` (default), `ai-1`, and `ai-2`.
+
+For AI extractors (`ai-1` and `ai-2`), you can also specify an `extract` option to control what content is extracted: `tables` (default) or `tables-paragraphs`.
+
+```py
+from pdftables_api import (Client, EXTRACTOR_AI_1, EXTRACTOR_AI_2,
+    EXTRACT_TABLES, EXTRACT_TABLES_PARAGRAPHS)
+
+# Standard extractor (default)
+c_standard = Client('my-api-key')
+
+# AI extractors for complex documents
+c_ai_1 = Client('my-api-key', extractor=EXTRACTOR_AI_1, extract=EXTRACT_TABLES)
+c_ai_2 = Client('my-api-key', extractor=EXTRACTOR_AI_2, extract=EXTRACT_TABLES_PARAGRAPHS)
+```
+
+See [PDFTables API documentation](https://pdftables.com/pdf-to-excel-api#extractors) for details.
+
 ## Test
 
 Tests run with pytest: `make test`

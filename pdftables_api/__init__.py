@@ -1,4 +1,4 @@
-# Copyright 2016 The Sensible Code Company
+# Copyright 2026 Cantabular Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,6 +13,11 @@
 # limitations under the License.
 
 from .pdftables_api import (
+    EXTRACT_TABLES,
+    EXTRACT_TABLES_PARAGRAPHS,
+    EXTRACTOR_AI_1,
+    EXTRACTOR_AI_2,
+    EXTRACTOR_STANDARD,
     FORMAT_CSV,
     FORMAT_XLSX,
     FORMAT_XLSX_MULTIPLE,
@@ -30,4 +35,9 @@ __all__ = [
     "FORMAT_XML",
     "APIException",
     "Client",
+    "EXTRACTOR_STANDARD",
+    "EXTRACTOR_AI_1",
+    "EXTRACTOR_AI_2",
+    "EXTRACT_TABLES",
+    "EXTRACT_TABLES_PARAGRAPHS",
 ]

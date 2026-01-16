@@ -1,4 +1,4 @@
-# Copyright 2016 The Sensible Code Company
+# Copyright 2026 Cantabular Ltd
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,7 +20,15 @@ from unittest import TestCase
 import pytest
 import requests_mock
 
-from pdftables_api import APIException, Client
+from pdftables_api import (
+    EXTRACT_TABLES,
+    EXTRACT_TABLES_PARAGRAPHS,
+    EXTRACTOR_AI_1,
+    EXTRACTOR_AI_2,
+    EXTRACTOR_STANDARD,
+    APIException,
+    Client,
+)
 
 
 class TestEnsureExtFormat(TestCase):
@@ -179,6 +187,157 @@ class TestRequests(TestCase):
             c = Client("fake_key")
             with pytest.raises(APIException, match="Unknown format requested"):
                 c.dump(png_fo)
+
+
+class TestExtractorParameters(TestCase):
+    def test_default_extractor(self):
+        """Test that default extractor is 'standard' with no extract parameter."""
+        with requests_mock.mock() as m:
+            m.post(
+                "https://pdftables.com/api?key=fake_key&format=xlsx-multiple&extractor=standard",
+                text="xlsx output",
+            )
+
+            c = Client("fake_key")
+            with NamedTemporaryFile(suffix="test.pdf") as tf:
+                tf.write(b"Hello world")
+                tf.file.close()
+                c.convert(tf.name)
+
+    def test_ai1_extractor_with_no_extract(self):
+        """Test ai-1 extractor with no extract parameter."""
+        with requests_mock.mock() as m:
+            m.post(
+                "https://pdftables.com/api?key=fake_key&format=xlsx-multiple&extractor=ai-1",
+                text="xlsx output",
+            )
+
+            c = Client("fake_key", extractor=EXTRACTOR_AI_1)
+            with NamedTemporaryFile(suffix="test.pdf") as tf:
+                tf.write(b"Hello world")
+                tf.file.close()
+                c.convert(tf.name)
+
+    def test_ai1_extractor_with_tables(self):
+        """Test ai-1 extractor with 'tables' extract parameter."""
+        with requests_mock.mock() as m:
+            m.post(
+                "https://pdftables.com/api?key=fake_key&format=xlsx-multiple&extractor=ai-1&extract=tables",
+                text="xlsx output",
+            )
+
+            c = Client("fake_key", extractor=EXTRACTOR_AI_1, extract=EXTRACT_TABLES)
+            with NamedTemporaryFile(suffix="test.pdf") as tf:
+                tf.write(b"Hello world")
+                tf.file.close()
+                c.convert(tf.name)
+
+    def test_ai1_extractor_with_tables_paragraphs(self):
+        """Test ai-1 extractor with 'tables-paragraphs' extract parameter."""
+        with requests_mock.mock() as m:
+            m.post(
+                "https://pdftables.com/api?key=fake_key&format=csv&extractor=ai-1&extract=tables-paragraphs",
+                text="csv output",
+            )
+
+            c = Client(
+                "fake_key", extractor=EXTRACTOR_AI_1, extract=EXTRACT_TABLES_PARAGRAPHS
+            )
+            with NamedTemporaryFile(suffix="test.pdf") as tf:
+                tf.write(b"Hello world")
+                tf.file.close()
+                c.convert(tf.name, out_format="csv")
+
+    def test_ai2_extractor_with_no_extract(self):
+        """Test ai-2 extractor with no extract parameter."""
+        with requests_mock.mock() as m:
+            m.post(
+                "https://pdftables.com/api?key=fake_key&format=xlsx-multiple&extractor=ai-2",
+                text="xlsx output",
+            )
+
+            c = Client("fake_key", extractor=EXTRACTOR_AI_2)
+            with NamedTemporaryFile(suffix="test.pdf") as tf:
+                tf.write(b"Hello world")
+                tf.file.close()
+                c.convert(tf.name)
+
+    def test_ai2_extractor_with_tables(self):
+        """Test ai-2 extractor with 'tables' extract parameter."""
+        with requests_mock.mock() as m:
+            m.post(
+                "https://pdftables.com/api?key=fake_key&format=xlsx-multiple&extractor=ai-2&extract=tables",
+                text="xlsx output",
+            )
+
+            c = Client("fake_key", extractor=EXTRACTOR_AI_2, extract=EXTRACT_TABLES)
+            with NamedTemporaryFile(suffix="test.pdf") as tf:
+                tf.write(b"Hello world")
+                tf.file.close()
+                c.convert(tf.name)
+
+    def test_ai2_extractor_with_tables_paragraphs(self):
+        """Test ai-2 extractor with 'tables-paragraphs' extract parameter."""
+        with requests_mock.mock() as m:
+            m.post(
+                "https://pdftables.com/api?key=fake_key&format=csv&extractor=ai-2&extract=tables-paragraphs",
+                text="csv output",
+            )
+
+            c = Client(
+                "fake_key", extractor=EXTRACTOR_AI_2, extract=EXTRACT_TABLES_PARAGRAPHS
+            )
+            with NamedTemporaryFile(suffix="test.pdf") as tf:
+                tf.write(b"Hello world")
+                tf.file.close()
+                c.convert(tf.name, out_format="csv")
+
+    def test_standard_extractor_no_extract_param_in_url(self):
+        """Test that standard extractor doesn't include extract parameter in URL."""
+        with requests_mock.mock() as m:
+            # Note: no 'extract' parameter in the URL for standard extractor
+            m.post(
+                "https://pdftables.com/api?key=fake_key&format=csv&extractor=standard",
+                text="csv output",
+            )
+
+            c = Client("fake_key", extractor=EXTRACTOR_STANDARD, extract=None)
+            with NamedTemporaryFile(suffix="test.pdf") as tf:
+                tf.write(b"Hello world")
+                tf.file.close()
+                c.convert(tf.name, out_format="csv")
+
+    def test_invalid_extractor_raises_error(self):
+        """Test that invalid extractor raises ValueError."""
+        with pytest.raises(
+            ValueError,
+            match='^Invalid extractor "invalid". Valid options are: standard, ai-1, ai-2$',
+        ):
+            Client("fake_key", extractor="invalid")
+
+    def test_invalid_extract_for_standard_raises_error(self):
+        """Test that providing extract parameter for standard extractor raises ValueError."""
+        with pytest.raises(
+            ValueError,
+            match='^Extractor "standard" does not support extract parameter$',
+        ):
+            Client("fake_key", extractor=EXTRACTOR_STANDARD, extract=EXTRACT_TABLES)
+
+    def test_invalid_extract_for_ai_raises_error(self):
+        """Test that invalid extract value for AI extractor raises ValueError."""
+        with pytest.raises(
+            ValueError,
+            match='^Invalid extract value "invalid" for extractor "ai-1". Valid values are: tables, tables-paragraphs$',
+        ):
+            Client("fake_key", extractor=EXTRACTOR_AI_1, extract="invalid")
+
+    def test_invalid_extract_for_ai2_raises_error(self):
+        """Test that invalid extract value for AI-2 extractor raises ValueError."""
+        with pytest.raises(
+            ValueError,
+            match='^Invalid extract value "invalid" for extractor "ai-2". Valid values are: tables, tables-paragraphs$',
+        ):
+            Client("fake_key", extractor=EXTRACTOR_AI_2, extract="invalid")
 
 
 def consume(s):
