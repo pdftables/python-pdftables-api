@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pdftables-api"
-version = "2.1.1"
+version = "2.1.2"
 requires-python = ">=3.10"
 description = "PDFTables.com Python API library."
 readme = "README.md"
