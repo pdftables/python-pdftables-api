@@ -3,7 +3,12 @@ on:
     push:
       branches:
         - main
+      tags:
+        - 'v*'
     pull_request:
+
+env:
+  PYTHON_BUILD_VERSION: '3.14'
 
 jobs:
   build:
@@ -37,3 +42,35 @@ jobs:
 
       - name: Build package
         run: uv build
+
+      - name: Upload artifacts
+        if: matrix.python-version == env.PYTHON_BUILD_VERSION
+        uses: actions/upload-artifact@v6
+        with:
+          name: python-package-distributions
+          path: dist/
+
+  publish:
+    name: Publish to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+
+    if: startsWith(github.ref, 'refs/tags/')
+
+    permissions:
+      id-token: write
+      contents: read
+
+    environment:
+      name: release
+      url: https://pypi.org/p/python-pdftables-api
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v7
+        with:
+          name: python-package-distributions
+          path: dist/
+
+      - name: Publish distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e # v1.13.0
