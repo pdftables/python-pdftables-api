@@ -4,14 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pdftables-api"
-version = "2.1.1"
+version = "2.1.2"
 requires-python = ">=3.10"
 description = "PDFTables.com Python API library."
 readme = "README.md"
-license = { text = "Apache License 2.0" }
+license = { text = "Apache-2.0" }
 keywords = ["pdf", "tables", "excel", "csv", "xml", "api"]
 authors = [ { name = "Cantabular Ltd", email = "hello@pdftables.com" } ]
-urls = { "Homepage" = "https://github.com/pdftables/python-pdftables-api" }
+urls = { Homepage = "https://pdftables.com/api", Repository = "https://github.com/pdftables/python-pdftables-api.git" }
 dependencies = ["requests"]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
