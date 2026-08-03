@@ -255,7 +255,7 @@ class Client:
         Ensure the appropriate file extension and format is given. If not
         provided, try to guess either.
         """
-        if out_format is not None and out_format not in _FORMATS_EXT.keys():
+        if out_format is not None and out_format not in _FORMATS_EXT:
             raise ValueError("Invalid output format")
 
         default_format = FORMAT_XLSX_MULTIPLE

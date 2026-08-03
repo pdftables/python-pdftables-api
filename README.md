@@ -36,8 +36,8 @@ Replace `my-api-key` below with your API key.
 ```py
 import pdftables_api
 
-c = pdftables_api.Client('my-api-key')
-c.xlsx('input.pdf', 'output.xlsx')
+c = pdftables_api.Client("my-api-key")
+c.xlsx("input.pdf", "output.xlsx")
 ```
 
 ## Formats
@@ -53,15 +53,22 @@ You can specify which extraction engine to use when creating a `Client`. The ava
 For AI extractors (`ai-1` and `ai-2`), you can also specify an `extract` option to control what content is extracted: `tables` (default) or `tables-paragraphs`.
 
 ```py
-from pdftables_api import (Client, EXTRACTOR_AI_1, EXTRACTOR_AI_2,
-    EXTRACT_TABLES, EXTRACT_TABLES_PARAGRAPHS)
+from pdftables_api import (
+    Client,
+    EXTRACTOR_AI_1,
+    EXTRACTOR_AI_2,
+    EXTRACT_TABLES,
+    EXTRACT_TABLES_PARAGRAPHS,
+)
 
 # Standard extractor (default)
-c_standard = Client('my-api-key')
+c_standard = Client("my-api-key")
 
 # AI extractors for complex documents
-c_ai_1 = Client('my-api-key', extractor=EXTRACTOR_AI_1, extract=EXTRACT_TABLES)
-c_ai_2 = Client('my-api-key', extractor=EXTRACTOR_AI_2, extract=EXTRACT_TABLES_PARAGRAPHS)
+c_ai_1 = Client("my-api-key", extractor=EXTRACTOR_AI_1, extract=EXTRACT_TABLES)
+c_ai_2 = Client(
+    "my-api-key", extractor=EXTRACTOR_AI_2, extract=EXTRACT_TABLES_PARAGRAPHS
+)
 ```
 
 See [PDFTables API documentation](https://pdftables.com/pdf-to-excel-api#extractors) for details.
@@ -91,6 +98,6 @@ The below example allows 60 seconds to connect to our server, and 1 hour to conv
 ```py
 import pdftables_api
 
-c = pdftables_api.Client('my-api-key', timeout=(60, 3600))
-c.xlsx('input.pdf', 'output.xlsx')
+c = pdftables_api.Client("my-api-key", timeout=(60, 3600))
+c.xlsx("input.pdf", "output.xlsx")
 ```

@@ -28,6 +28,11 @@ from .pdftables_api import (
 )
 
 __all__ = [
+    "EXTRACTOR_AI_1",
+    "EXTRACTOR_AI_2",
+    "EXTRACTOR_STANDARD",
+    "EXTRACT_TABLES",
+    "EXTRACT_TABLES_PARAGRAPHS",
     "FORMAT_CSV",
     "FORMAT_XLSX",
     "FORMAT_XLSX_MULTIPLE",
@@ -35,9 +40,4 @@ __all__ = [
     "FORMAT_XML",
     "APIException",
     "Client",
-    "EXTRACTOR_STANDARD",
-    "EXTRACTOR_AI_1",
-    "EXTRACTOR_AI_2",
-    "EXTRACT_TABLES",
-    "EXTRACT_TABLES_PARAGRAPHS",
 ]
